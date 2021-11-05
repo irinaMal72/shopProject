@@ -27,7 +27,6 @@ class UserController{
         return  res.json({token})
     }
     async login(req,res,next){
-        //скорей всего тут нужно дописать авторизацию через внешние сайты
         const  {email,password} = req.body
         const  user = await  User.findOne({where:{email}})
         if(!user){
@@ -43,6 +42,10 @@ class UserController{
     async check(req,res,next) {
         const  token = generateJwt(req.user.id,req.user.email,req.user.role)
         return  res.json({token})
+    }
+    async loginGoogle(req,res){
+        const  token = generateJwt(0,req.email,"USER")
+        return res.json({token})
     }
 
 }

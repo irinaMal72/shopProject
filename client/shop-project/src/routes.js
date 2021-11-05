@@ -7,12 +7,15 @@ import DevicePage from "./pages/DevicePage";
 
 export const authRoutes = [
     {
-        path: ADMIN_ROUTE,
-        Component: Admin
-    },
-    {
         path: BASKET_ROUTE,
         Component: Basket
+    },
+]
+
+export const authRoutesAdmin = [
+    {
+        path: ADMIN_ROUTE,
+        Component: Admin
     },
 ]
 

@@ -1,21 +1,31 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Container, Form} from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import {NavLink, useLocation, useHistory} from "react-router-dom";
 import {LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE} from "../utils/consts";
-import {login, registration} from "../http/userAPI";
+import {login, loginGoogle, registration} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
+import firebase from "firebase/compat";
 
 const Auth = observer(() => {
-    const {user} = useContext(Context)
+    const {userApp,auth} = useContext(Context)
     const location = useLocation()
     const history = useHistory()
     const isLogin = location.pathname === LOGIN_ROUTE
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
+    const logInGoogle = async () =>{
+        const  provider = new firebase.auth.GoogleAuthProvider()
+        const {user} = await auth.signInWithPopup(provider)
+        let data = await loginGoogle(user.email)
+        userApp.setUser(data)
+        userApp.setIsAuth(true)
+        history.push(SHOP_ROUTE)
+    }
 
     const click = async () => {
         try {
@@ -25,8 +35,8 @@ const Auth = observer(() => {
             } else {
                 data = await registration(email, password);
             }
-            user.setUser(user)
-            user.setIsAuth(true)
+            userApp.setUser(data)
+            userApp.setIsAuth(true)
             history.push(SHOP_ROUTE)
         } catch (e) {
             alert(e.response.data.message)
@@ -39,7 +49,7 @@ const Auth = observer(() => {
             className="d-flex justify-content-center align-items-center"
             style={{height: window.innerHeight - 54}}
         >
-            <Card style={{width: 600}} className="p-5">
+            <Card style={{width: 1000}} className="p-5">
                 <h2 className="m-auto">{isLogin ? 'Авторизация' : "Регистрация"}</h2>
                 <Form className="d-flex flex-column">
                     <Form.Control
@@ -71,6 +81,17 @@ const Auth = observer(() => {
                         >
                             {isLogin ? 'Войти' : 'Регистрация'}
                         </Button>
+                        {isLogin ?
+
+                            <Button
+                                variant={"outline-success"}
+                                onClick={logInGoogle}
+                            >
+                                Войти с помощью Google
+                            </Button>
+                            :
+                            ''
+                        }
                     </Row>
 
                 </Form>
