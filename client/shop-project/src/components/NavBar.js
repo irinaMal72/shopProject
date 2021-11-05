@@ -21,7 +21,7 @@ const NavBar = observer(() => {
     return (
         <Navbar bg="dark" variant="dark">
             <Container>
-                <NavLink style={{color:'white'}} to={SHOP_ROUTE}>КупиДевайс</NavLink>
+                <NavLink style={{color:'white'}} to={SHOP_ROUTE}>ХочуТелефон</NavLink>
                 {userApp.isAuth ?
                     <Nav className="ml-auto" style={{color: 'white'}}>
                         {userApp._user.role === "ADMIN" ?
